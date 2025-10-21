@@ -12,7 +12,8 @@ export default function Hero() {
   useEffect(() => setIsClient(true), []);
   const t = useTranslations();
 
-  const title = (hero as any)?.title ?? t("hero.title");
+  type HeroJson = { title?: string };
+  const title = (hero as HeroJson)?.title ?? t("hero.title");
 
 
   return (

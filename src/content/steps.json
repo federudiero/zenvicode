@@ -2,7 +2,7 @@
   "items": [
     {
       "id": "outcomes",
-      "img": "/media/marketing/outcomes-hero.png.png",
+      "img": "/media/marketing/outcomes-hero.png",
       "title": "We don’t sell systems. We deliver solutions.",
       "subtitle": "Automations that adapt to your processes and deliver measurable results from week one.",
       "bullets": [
@@ -17,7 +17,7 @@
     },
     {
       "id": "bottleneck",
-      "img": "/media/marketing/spot-bottleneck.png.png",
+      "img": "/media/marketing/spot-bottleneck.png",
       "title": "Find the bottleneck. Turn it into a flow.",
       "subtitle": "We map the problem, design the flow, and measure ROI in short cycles.",
       "bullets": [
@@ -32,7 +32,7 @@
     },
     {
       "id": "buy-outcomes",
-      "img": "/media/marketing/buy-outcomes.png.png",
+      "img": "/media/marketing/buy-outcomes.png",
       "title": "Don’t buy software. Buy outcomes.",
       "subtitle": "Pay for scope and outcome: clear costs, short timelines, and objective goals.",
       "bullets": [
@@ -47,7 +47,7 @@
     },
     {
       "id": "compare",
-      "img": "/media/marketing/tool-vs-solution.png.png",
+      "img": "/media/marketing/tool-vs-solution.png",
       "title": "Tools vs. Solutions: choose the approach that drives the business.",
       "subtitle": "Fewer new apps, more friction removed. We design around your reality.",
       "bullets": [

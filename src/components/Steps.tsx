@@ -17,6 +17,11 @@ type Block = {
   reverse?: boolean;
 };
 
+// Nueva interfaz para tipar el JSON importado
+type StepsJson = {
+  items: Block[];
+};
+
 /* ==== Reveal palabra por palabra (para subtítulo) ==== */
 const wordsContainer = (delay = 0): Variants => ({
   hidden: { opacity: 0, y: 6 },
@@ -41,7 +46,24 @@ function WordReveal({
   className = "",
 }: { text: string; delay?: number; className?: string }) {
   const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const words = text.split(" ");
+
+  // Render estático en SSR/primera pintura para evitar hydration mismatch
+  if (!mounted) {
+    return (
+      <p className={className} suppressHydrationWarning>
+        {words.map((w, i) => (
+          <span key={i} className="inline-block mr-1">
+            {w}
+          </span>
+        ))}
+      </p>
+    );
+  }
+
+  // Animación sólo en cliente
   return (
     <motion.p
       className={className}
@@ -49,6 +71,7 @@ function WordReveal({
       whileInView={reduce ? undefined : "show"}
       viewport={reduce ? undefined : { once: true, amount: 0.55 }}
       variants={reduce ? undefined : wordsContainer(delay)}
+      suppressHydrationWarning
     >
       {words.map((w, i) => (
         <motion.span key={i} variants={reduce ? undefined : word} className="inline-block mr-1">
@@ -78,7 +101,7 @@ export default function Steps() {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
 
-  const items: Block[] = Array.isArray((steps as any).items) ? (steps as any).items : [];
+  const items: Block[] = Array.isArray((steps as StepsJson).items) ? (steps as StepsJson).items : [];
   const canAnimate = isClient && !reduce;
 
   // sombra/glow del hero para reutilizar

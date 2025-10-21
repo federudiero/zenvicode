@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useCallback } from "react";
+import Image from "next/image";
 
 type Item = {
   src?: string;
@@ -144,12 +145,14 @@ function Cell({
 
         {/* Imagen si existe */}
         {item?.src ? (
-          <img
-            src={item.src}
-            alt={item.alt ?? item.title ?? "showcase"}
+          <Image
+            src={item.src as string}
+            alt={(item.alt ?? item.title ?? "showcase") as string}
+            fill
+            sizes="(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw"
             className="absolute inset-0 h-full w-full object-cover z-10 scale-105 group-hover:scale-110 transition-transform duration-700 ease-out"
+            priority={false}
             draggable={false}
-            loading="lazy"
           />
         ) : (
           // Card solo texto (sin imagen)

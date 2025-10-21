@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 
 type Props = {
   count?: number;
@@ -19,7 +19,13 @@ export default function N8nGraphBG({
   showConnector = false,
   showComets = false,
 }: Props) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const nodes = useMemo(() => {
+    if (!mounted) return [] as Array<{
+      id: number; left: number; top: number; size: number; dur: number; delay: number;
+    }>;
     return Array.from({ length: count }).map((_, i) => {
       const r1 = Math.random();
       const r2 = Math.random();
@@ -34,12 +40,13 @@ export default function N8nGraphBG({
         delay: Math.random() * 2,
       };
     });
-  }, [count, speedRange[0], speedRange[1]]);
+  }, [mounted, count, speedRange]);
 
   return (
     <div
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       style={{ contain: "paint" }} // aísla el pintado y previene efectos colaterales
+      suppressHydrationWarning
     >
       <div className="absolute inset-0 bg-dot-grid text-white/40 dark:text-white/30" />
       <div className="grain absolute inset-0" />
@@ -70,7 +77,7 @@ export default function N8nGraphBG({
         />
       ))}
 
-      {showConnector && (
+      {mounted && showConnector && (
         <svg className="absolute inset-0" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="gl" x1="0" y1="0" x2="1" y2="0">
@@ -90,7 +97,7 @@ export default function N8nGraphBG({
         </svg>
       )}
 
-      {showComets && (
+      {mounted && showComets && (
         <>
           <Comet y="24%" delay={0} />
           <Comet y="72%" delay={1.2} />

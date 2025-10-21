@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import { Lightbox } from "@/components/common/Lightbox";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -48,12 +49,15 @@ export default function N8nGallery() {
                 setOpen(true);
               }}
             >
-              <img
-                src={img.src}
-                alt={img.alt}
-                className="block w-full h-40 sm:h-48 lg:h-44 object-cover"
-                loading="lazy"
-              />
+              <div className="relative w-full h-40 sm:h-48 lg:h-44">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
             </motion.button>
           ))}
         </motion.div>
@@ -61,7 +65,15 @@ export default function N8nGallery() {
 
       <Lightbox open={open} onOpenChange={setOpen}>
         {active && (
-          <img src={active} alt="Active workflow" className="w-full h-auto rounded-lg border" />
+          <Image
+            src={active}
+            alt="Active workflow"
+            width={1280}
+            height={800}
+            className="w-full h-auto rounded-lg border"
+            unoptimized
+            priority
+          />
         )}
       </Lightbox>
     </section>

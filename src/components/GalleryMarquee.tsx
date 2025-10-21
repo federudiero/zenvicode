@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 type Props = {
   images: string[];                 // rutas (p.ej. /media/1.png)
@@ -47,20 +48,25 @@ export default function GalleryMarquee({
                 "bg-white/5 border border-white/10",
                 "shadow-[0_10px_30px_-15px_rgba(0,0,0,0.4)]",
                 "transition-transform duration-300 will-change-transform",
+                "aspect-[16/10]", // asegura caja para Image fill
               ].join(" ")}
               style={{ transformOrigin: fromLeft ? "left center" : "right center" }}
             >
-              <img
+              <Image
                 src={src}
                 alt="gallery"
-                loading="lazy"
+                fill
+                sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                className="object-contain"
                 draggable={false}
-                className="block w-full h-auto object-contain"
+                unoptimized
+                priority={false}
               />
 
               {/* overlay sutil al hover */}
               <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/10 to-transparent" />
-            </div>
+            </div
+            >
 
             {/* hover scale sutil */}
             <style jsx>{`

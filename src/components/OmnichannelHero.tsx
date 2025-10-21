@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 type Logo = {
   src: string;
@@ -19,13 +20,6 @@ type Props = {
   rightLogos?: Logo[];
 };
 
-const float = (delay = 0) => ({
-  initial: { y: 0, rotate: 0 },
-  animate: {
-    y: [0, -8, 0],
-    transition: { duration: 4.5, repeat: Infinity, ease: "easeInOut", delay },
-  },
-});
 
 export default function OmnichannelHero({
   title = "Omnichannel Ads,\nOne Smart Platform",
@@ -117,12 +111,14 @@ function Tile({
       // rotación fija correcta en style
       style={{ transform: `rotate(${rotate}deg)` }}
     >
-      <img
+      <Image
         src={src}
         alt={alt}
+        width={96}
+        height={96}
+        priority={delay < 0.2}
         className="max-h-[70%] max-w-[70%] object-contain"
         draggable={false}
-        loading="lazy"
       />
     </motion.div>
   );
