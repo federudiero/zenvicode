@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "id": "sales-pipeline",
+      "title": "Sales pipeline automation",
+      "description": "Sync leads to CRM, trigger follow-ups, and track conversions.",
+      "icon": "pipeline"
+    },
+    {
+      "id": "ops-intake",
+      "title": "Ops intake routing",
+      "description": "Route requests to the right team with SLAs.",
+      "icon": "ops"
+    },
+    {
+      "id": "reporting",
+      "title": "Automated reporting",
+      "description": "Aggregate metrics and deliver dashboards weekly.",
+      "icon": "report"
+    }
+  ]
+}

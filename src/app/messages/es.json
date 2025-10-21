@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "useCases": "Casos de uso",
+    "howWeWork": "Cómo trabajamos",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "privacy": "Privacidad",
+    "terms": "Términos"
+  },
+  "hero": {
+    "title": "Automatiza tus flujos con ZenviCode",
+    "subtitle": "Enfocado en California, bilingüe (EN/ES), seguridad por diseño",
+    "logoAlt": "Logo de ZenviCode"
+  },
+  "cta": {
+    "demo": "Agenda una demo",
+    "lead": "Hablemos"
+  },
+  "logoMarquee": {
+    "title": "Tecnologías de confianza"
+  },
+  "flow": {
+    "title": "Vista previa: Flujo automatizado",
+    "description": "Visualización de ejemplo: ingreso → validación → sincronización al CRM.",
+    "steps": {
+      "intake": "Ingreso",
+      "validation": "Validación",
+      "crm": "Sincronización CRM"
+    }
+  },
+  "workflows": {
+    "title": "Workflows",
+    "description": "Galería de layouts de automatización"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "home": "Home",
+    "useCases": "Use Cases",
+    "howWeWork": "How We Work",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "hero": {
+    "title": "Automate your workflows with ZenviCode",
+    "subtitle": "California-focused, bilingual (EN/ES), secure by design",
+    "logoAlt": "ZenviCode logo"
+  },
+  "cta": {
+    "demo": "Book a demo",
+    "lead": "Get in touch"
+  },
+  "logoMarquee": {
+    "title": "Trusted technologies"
+  },
+  "flow": {
+    "title": "Preview: Automated Flow",
+    "description": "Sample visualization of an intake → validation → CRM sync pipeline.",
+    "steps": {
+      "intake": "Intake",
+      "validation": "Validation",
+      "crm": "CRM Sync"
+    }
+  },
+  "workflows": {
+    "title": "Workflows",
+    "description": "Gallery of automation layouts"
+  }
+}

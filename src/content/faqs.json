@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "q": "Is ZenviCode bilingual?", "a": "Yes, English by default with Spanish mirrored via next-intl." },
+    { "q": "Do you support California compliance?", "a": "We follow CA-centric SEO and privacy conventions." },
+    { "q": "How is data protected?", "a": "Supabase RLS with role model (admin, sales, ops)." },
+    { "q": "Are automations integrated?", "a": "Phase 2 integrates n8n; stubs provided meanwhile." }
+  ]
+}

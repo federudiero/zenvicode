@@ -1,0 +1,129 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+
+type Logo = {
+  src: string;
+  alt: string;
+  /** initial rotation in degrees */
+  rotate?: number;
+};
+
+type Props = {
+  title?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  leftLogos?: Logo[];
+  rightLogos?: Logo[];
+};
+
+const float = (delay = 0) => ({
+  initial: { y: 0, rotate: 0 },
+  animate: {
+    y: [0, -8, 0],
+    transition: { duration: 4.5, repeat: Infinity, ease: "easeInOut", delay },
+  },
+});
+
+export default function OmnichannelHero({
+  title = "Omnichannel Ads,\nOne Smart Platform",
+  subtitle = "Run and manage campaigns seamlessly across every major platform. Launch once, scale everywhere—with AI-powered optimization.",
+  ctaLabel = "Try Now for Free",
+  ctaHref = "/contact",
+   leftLogos = [
+    { src: "/brands/meta.svg",      alt: "Meta",       rotate: -14 },
+    { src: "/brands/googleads.svg", alt: "Google Ads", rotate:  10 },
+    { src: "/brands/reddit.svg",    alt: "Reddit",     rotate:  -6 },
+  ],
+  rightLogos = [
+    { src: "/brands/linkedin.svg",  alt: "LinkedIn",   rotate:  12 },
+    { src: "/brands/tiktok.svg",    alt: "TikTok",     rotate:  -8 },
+    { src: "/brands/youtube.svg",   alt: "YouTube",    rotate:   8 },
+  ],
+}: Props) {
+  return (
+    <section className="relative">
+      <div className="container mx-auto px-6">
+        {/* 3-col grid: left logos / text / right logos */}
+        <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-8 md:gap-12 py-12 md:py-16">
+          {/* Left column */}
+          <div className="relative h-[320px] md:h-[360px] order-2 md:order-1">
+            <Tile {...leftLogos[0]} className="absolute left-2 top-0 md:left-4 md:top-2" delay={0.0} />
+            <Tile {...leftLogos[1]} className="absolute left-8 md:left-16 top-24 md:top-28" delay={0.4} />
+            <Tile {...leftLogos[2]} className="absolute left-0 md:left-6 bottom-0" delay={0.8} />
+          </div>
+
+          {/* Center column */}
+          <div className="order-1 md:order-2 text-center">
+            <h2 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight whitespace-pre-line">
+              {title}
+            </h2>
+            <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+              {subtitle}
+            </p>
+
+            <div className="mt-5">
+              <Link
+                href={ctaHref}
+                className={[
+                  "inline-flex items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold text-white",
+                  "bg-gradient-to-r from-fuchsia-600 via-violet-600 to-indigo-600",
+                  "shadow-[0_8px_24px_-8px_rgba(168,85,247,0.55)] ring-1 ring-white/10",
+                  "transition hover:shadow-[0_14px_34px_-10px_rgba(168,85,247,0.75)] hover:saturate-125 active:translate-y-px",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/70",
+                ].join(" ")}
+              >
+                {ctaLabel}
+              </Link>
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div className="relative h-[320px] md:h-[360px] order-3">
+            <Tile {...rightLogos[0]} className="absolute right-2 top-0 md:right-4 md:top-2" delay={0.15} />
+            <Tile {...rightLogos[1]} className="absolute right-8 md:right-16 top-24 md:top-28" delay={0.55} />
+            <Tile {...rightLogos[2]} className="absolute right-0 md:right-6 bottom-0" delay={0.95} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Tile({
+  src,
+  alt,
+  rotate = 0,
+  className = "",
+  delay = 0,
+}: Logo & { className?: string; delay?: number }) {
+  return (
+     <motion.div
+      initial={{ y: 0 }}
+      animate={{
+        y: [0, -8, 0],
+        transition: { duration: 4.5, repeat: Infinity, ease: "easeInOut", delay },
+      }}
+      whileHover={{ scale: 1.05, rotate: rotate * 0.06 }}
+      className={[
+        "size-28 md:size-32 rounded-2xl bg-white shadow-xl",
+        "border border-black/5",
+        "flex items-center justify-center",
+        "transition-transform will-change-transform",
+        className,
+      ].join(" ")}
+      // rotación fija correcta en style
+      style={{ transform: `rotate(${rotate}deg)` }}
+    >
+      <img
+        src={src}
+        alt={alt}
+        className="max-h-[70%] max-w-[70%] object-contain"
+        draggable={false}
+        loading="lazy"
+      />
+    </motion.div>
+  );
+}
