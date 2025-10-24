@@ -102,12 +102,12 @@ export default function ShowcaseCollage({
               <div className="absolute left-0 right-0 bottom-0 p-3 sm:p-4">
                 <div className="mx-1 sm:mx-2 rounded-xl bg-black/45 ring-1 ring-white/10 backdrop-blur px-3.5 py-2.5 max-w-[90%]">
                   {active?.kicker && (
-                    <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white/80">
+                    <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-white/80">
                       {active.kicker}
                     </p>
                   )}
                   {active?.title && (
-                    <h4 className="text-sm sm:text-base font-semibold leading-tight">
+                    <h4 className="text-base sm:text-lg font-semibold tracking-tight [text-wrap:balance]">
                       {active.title}
                     </h4>
                   )}

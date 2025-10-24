@@ -15,52 +15,56 @@ export default function Hero() {
   type HeroJson = { title?: string };
   const title = (hero as HeroJson)?.title ?? t("hero.title");
 
+  // ✅ Sólo animamos si estamos en cliente y no se prefiere reducir animaciones
+  const canAnimate = isClient && !reduce;
 
   return (
     <section
       className="
         relative overflow-hidden
-        py-36 md:py-44 lg:py-56      /* más aire vertical */
-        min-h-[70vh] md:min-h-[72vh] /* altura mínima del hero */
-        flex items-center            /* centra contenido vertical */
+        py-36 md:py-44 lg:py-56
+        min-h-[70vh] md:min-h-[72vh]
+        flex items-center
       "
     >
       <div className="mx-auto max-w-6xl px-6 text-center">
-          <div className="mb-8 md:mb-10">
+        {/* Símbolo animado */}
+        <div className="mb-8 md:mb-10">
           <SymbolAnimated size={240} float orbiting src="/zenvicode_symbol.png" />
         </div>
-<div className="mx-auto mt-4 h-px w-24" />
-         
 
-        <div className="mx-auto mt-8 md:mt-10 max-w-6xl">
-      <ZenvicodeReveal
-  className="text-6xl sm:text-7xl font-semibold tracking-tight text-white
-             [text-shadow:0_2px_14px_rgba(139,92,246,.35),0_1px_0_rgba(0,0,0,.65)]"
-  align="center"
-  mode="mount"
-  force
-  delay={0.15}
-/>
-           <div className="mx-auto mt-4 h-px w-24" />
-          {/* símbolo animado */}
-     
-      
+        {/* ===== Marca: Zenvicode (arriba, grande) ===== */}
+        <motion.h1
+          initial={canAnimate ? { opacity: 0, y: 10 } : false}
+          animate={canAnimate ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="
+            text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white
+            [text-wrap:balance]
+            [text-shadow:0_3px_18px_rgba(0,0,0,.65),0_0_22px_rgba(139,92,246,.38)]
+          "
+        >
+          Zenvicode
+        </motion.h1>
+
+        {/* Separador sutil */}
+        <div className="mx-auto mt-2 h-3" />
+
+        {/* ===== Headline desde hero.json (más chico) ===== */}
+        <div className="mx-auto mt-1 md:mt-2 max-w-5xl">
+          <ZenvicodeReveal
+            text={title}
+            className="
+              text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white
+              [text-wrap:balance]
+              [text-shadow:0_2px_14px_rgba(139,92,246,.35),0_1px_0_rgba(0,0,0,.65)]
+            "
+            align="center"
+            mode="mount"
+            force
+            delay={0.15}
+          />
         </div>
-
-        {/* título principal (de hero.json) */}
-       <motion.h1
-  initial={false}
-  animate={isClient && !reduce ? { opacity: 1, y: 0 } : undefined}
-  transition={{ duration: 0.8, ease: "easeOut" }}
-  className="mt-6 text-3xl sm:text-5xl font-medium text-white
-             [text-shadow:0_3px_18px_rgba(0,0,0,.65),0_0_22px_rgba(139,92,246,.38)]"
->
-  {title}
-</motion.h1>
- 
-
-        {/* 'Zenvicode' animado como bloque aparte */}
-       
       </div>
     </section>
   );

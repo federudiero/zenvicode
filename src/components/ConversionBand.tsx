@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 export default function ConversionBand({
   title = "Launch faster. Convert more.",
   subtitle = "Plug-and-play workflows, AI assistance, and expert onboarding included.",
-  cta = { label: "Start free", href: "/contact" },
+  cta = { label: "START FREE", href: "/contact" },
 }: {
   title?: string;
   subtitle?: string;
@@ -32,10 +32,10 @@ export default function ConversionBand({
 
           <div className="relative grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
             <div>
-              <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+              <h3 className="text-2xl md:text-3xl font-semibold tracking-tight [text-wrap:balance]">
                 {title}
               </h3>
-              <p className="mt-2 text-sm md:text-base text-muted-foreground">
+              <p className="mt-2 text-base md:text-lg leading-relaxed text-white/80 [text-wrap:pretty]">
                 {subtitle}
               </p>
 

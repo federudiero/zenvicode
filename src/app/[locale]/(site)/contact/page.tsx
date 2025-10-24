@@ -21,10 +21,10 @@ export default function ContactPage() {
 
       {/* Header */}
       <section className="container mx-auto px-6 pt-16 pb-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-          Let’s talk
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight [text-wrap:balance]">
+          Let's Talk
         </h1>
-        <p className="mt-3 text-sm md:text-base text-muted-foreground">
+        <p className="mt-3 text-base md:text-lg leading-relaxed text-white/80 [text-wrap:pretty]">
           Tell us what you need — we reply in under 24 hours. Or email us at
           <a href="mailto:federudiero@gmail.com" className="inline-block ml-1 underline">federudiero@gmail.com</a>.
         </p>

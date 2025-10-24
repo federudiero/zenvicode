@@ -51,10 +51,10 @@ export default function OmnichannelHero({
 
           {/* Center column */}
           <div className="order-1 md:order-2 text-center">
-            <h2 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight whitespace-pre-line">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight whitespace-pre-line [text-wrap:balance]">
               {title}
             </h2>
-            <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+            <p className="mt-3 text-base md:text-lg leading-relaxed text-white/80 max-w-lg mx-auto [text-wrap:pretty]">
               {subtitle}
             </p>
 

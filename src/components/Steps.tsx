@@ -4,7 +4,7 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import steps from "@/content/steps.json";
-import ZenvicodeReveal from "@/components/ZenvicodeReveal"; // efecto letra x letra
+// ❌ ya no usamos ZenvicodeReveal para el título (causaba cortes por letra)
 
 type Block = {
   id: string;
@@ -17,12 +17,9 @@ type Block = {
   reverse?: boolean;
 };
 
-// Nueva interfaz para tipar el JSON importado
-type StepsJson = {
-  items: Block[];
-};
+type StepsJson = { items: Block[] };
 
-/* ==== Reveal palabra por palabra (para subtítulo) ==== */
+/* ==== Reveal palabra por palabra ==== */
 const wordsContainer = (delay = 0): Variants => ({
   hidden: { opacity: 0, y: 6 },
   show: {
@@ -35,7 +32,10 @@ const wordsContainer = (delay = 0): Variants => ({
 const word: Variants = {
   hidden: { opacity: 0, y: 14, x: -6, filter: "blur(6px)" },
   show: {
-    opacity: 1, y: 0, x: 0, filter: "blur(0px)",
+    opacity: 1,
+    y: 0,
+    x: 0,
+    filter: "blur(0px)",
     transition: { duration: 0.45, ease: "easeOut" },
   },
 };
@@ -50,20 +50,16 @@ function WordReveal({
   useEffect(() => setMounted(true), []);
   const words = text.split(" ");
 
-  // Render estático en SSR/primera pintura para evitar hydration mismatch
   if (!mounted) {
     return (
       <p className={className} suppressHydrationWarning>
         {words.map((w, i) => (
-          <span key={i} className="inline-block mr-1">
-            {w}
-          </span>
+          <span key={i} className="inline-block mr-1">{w}</span>
         ))}
       </p>
     );
   }
 
-  // Animación sólo en cliente
   return (
     <motion.p
       className={className}
@@ -74,7 +70,11 @@ function WordReveal({
       suppressHydrationWarning
     >
       {words.map((w, i) => (
-        <motion.span key={i} variants={reduce ? undefined : word} className="inline-block mr-1">
+        <motion.span
+          key={i}
+          variants={reduce ? undefined : word}
+          className="inline-block mr-1"
+        >
           {w}
         </motion.span>
       ))}
@@ -85,7 +85,11 @@ function WordReveal({
 /* ==== Contenedor + slide/blur para imagen/texto ==== */
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut", staggerChildren: 0.12, delayChildren: 0.06 } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: "easeOut", staggerChildren: 0.12, delayChildren: 0.06 },
+  },
 };
 
 const slideBlur = (from: "left" | "right"): Variants => {
@@ -104,8 +108,8 @@ export default function Steps() {
   const items: Block[] = Array.isArray((steps as StepsJson).items) ? (steps as StepsJson).items : [];
   const canAnimate = isClient && !reduce;
 
-  // sombra/glow del hero para reutilizar
-  const heroShadow = "[text-shadow:0_3px_18px_rgba(0,0,0,.65),0_0_22px_rgba(139,92,246,.38)]";
+  const heroShadow =
+    "[text-shadow:0_3px_18px_rgba(0,0,0,.65),0_0_22px_rgba(139,92,246,.38)]";
 
   return (
     <section className="px-6 py-12">
@@ -129,7 +133,7 @@ export default function Steps() {
               {...motionGroup}
               className={`grid items-center gap-8 md:grid-cols-2 ${rev ? "md:[&>*:first-child]:order-2" : ""}`}
             >
-              {/* ===== Imagen con "glow" tipo Hero + entrada suave ===== */}
+              {/* Imagen */}
               <motion.div
                 variants={reduce ? undefined : slideBlur(rev ? "right" : "left")}
                 className="
@@ -156,39 +160,28 @@ export default function Steps() {
                     [filter:drop-shadow(0_0_22px_rgba(139,92,246,.28))]
                   "
                 />
-                {/* Vignette radial para contraste del contenido embebido */}
-                <div
-                  className="pointer-events-none absolute inset-0
-                             [background:radial-gradient(60%_60%_at_50%_50%,rgba(0,0,0,.50),transparent_70%)]"
-                />
-                {/* Gradiente desde bordes */}
-                <div
-                  className="pointer-events-none absolute inset-0
-                             bg-[linear-gradient(180deg,rgba(8,0,20,.45),transparent_35%),
-                                 radial-gradient(80%_80%_at_50%_20%,rgba(8,0,20,.35),transparent_70%)]"
-                />
+                <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_60%_at_50%_50%,rgba(0,0,0,.50),transparent_70%)]" />
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,0,20,.45),transparent_35%),radial-gradient(80%_80%_at_50%_20%,rgba(8,0,20,.35),transparent_70%)]" />
               </motion.div>
 
               {/* Texto */}
               <motion.div variants={reduce ? undefined : slideBlur(rev ? "left" : "right")} className="space-y-4">
-                {/* Título con el mismo glow del Hero */}
-                <ZenvicodeReveal
+                {/* Título: palabra por palabra + sin cortes internos */}
+                <WordReveal
                   text={b.title}
-                  className={`text-3xl sm:text-4xl font-semibold text-white ${heroShadow}`}
-                  align="left"
-                  mode="inView"
-                  force
                   delay={idx * 0.05}
+                  className={`text-2xl md:text-3xl font-semibold text-white ${heroShadow}
+                              [text-wrap:balance] break-normal [overflow-wrap:normal] [word-break:normal] [hyphens:none]`}
                 />
 
-                {/* Subtítulo palabra por palabra con glow */}
+                {/* Subtítulo */}
                 <WordReveal
                   text={b.subtitle}
                   delay={0.1}
-                  className={`text-white/85 leading-relaxed ${heroShadow}`}
+                  className={`text-base md:text-lg leading-relaxed text-white/80 ${heroShadow} [text-wrap:pretty]`}
                 />
 
-                {/* Bullets: visibles en SSR + animación solo en cliente */}
+                {/* Bullets */}
                 <motion.ul
                   initial={false}
                   whileInView={canAnimate ? "show" : undefined}
@@ -202,8 +195,8 @@ export default function Steps() {
                       variants={canAnimate ? { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } } : undefined}
                       className="flex gap-2 opacity-95"
                     >
-                      <span className="mt-2 inline-block size-2 rounded-full bg-fuchsia-400/80" />
-                      <span className={`text-white/90 ${heroShadow}`}>{t}</span>
+                      <span className="mt-2 inline-block size-2 rounded-full bg-fuchsia-400" />
+                      <span className={`text-white/80 ${heroShadow}`}>{t}</span>
                     </motion.li>
                   ))}
                 </motion.ul>
