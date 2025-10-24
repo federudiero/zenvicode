@@ -18,6 +18,7 @@ const baseSchema = z.object({
 type FormType = "lead" | "demo";
 
 export default function FormCard({ type }: { type: FormType }) {
+  // ⚠️ schema dinámico según el tipo
   const schema = baseSchema.extend(
     type === "demo" ? { company: z.string().min(2, "Company is too short") } : {}
   );
@@ -26,8 +27,15 @@ export default function FormCard({ type }: { type: FormType }) {
   const [status, setStatus] =
     useState<"idle" | "loading" | "success" | "error">("idle");
 
-  const { register, handleSubmit, formState: { errors } } =
-    useForm<FormValues>({ resolver: zodResolver(schema) });
+  // 👇 añadimos `reset`
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
 
   const onSubmit = async (values: FormValues) => {
     setStatus("loading");
@@ -38,6 +46,9 @@ export default function FormCard({ type }: { type: FormType }) {
         body: JSON.stringify(values),
       });
       if (!res.ok) throw new Error("Request failed");
+
+      // ✅ LIMPIA TODOS LOS CAMPOS LUEGO DEL ÉXITO
+      reset(); // <-- esto borra name/email/message y company (si existe)
       setStatus("success");
     } catch (e) {
       console.error(e);

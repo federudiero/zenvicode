@@ -1,210 +1,237 @@
 "use client";
 
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import { useCallback } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Item = {
   src?: string;
   alt?: string;
-  /** Pretítulo corto (kicker) */
   kicker?: string;
-  /** Título o etiqueta principal */
   title?: string;
-  /** Posición del caption */
-  captionPos?: "top" | "bottom" | "center";
+  captionPos?: "top" | "bottom" | "center"; // (not used in this variant)
+};
+
+type Props = {
+  images?: (string | Item)[];
+  /** ms between slides (0 = no auto-rotation) */
+  autoplayMs?: number;
+  /** thumbnails panel position on desktop */
+  thumbsSide?: "right" | "left";
 };
 
 export default function ShowcaseCollage({
   images = [
-    { src: "/1.png", kicker: "Integraciones", title: "WhatsApp, Slack y más" },
-    { src: "/2.png", kicker: "Orquestación", title: "Flujos n8n escalables" },
-    { src: "/3.png", kicker: "Mensajería", title: "Plantillas y KPIs" },
-    { src: "/4.png", kicker: "IA Agentes", title: "Asignación y memoria" },
-    { src: "/5.png", kicker: "Monitoreo", title: "Alertas y observabilidad" },
-    { src: "/6.png", kicker: "Analítica", title: "Embudo y conversión" },
+    { src: "/1.png", kicker: "Integrations", title: "WhatsApp, Slack & more" },
+    { src: "/2.png", kicker: "Orchestration", title: "Scalable n8n flows" },
+    { src: "/3.png", kicker: "Messaging", title: "Templates & KPIs" },
+    { src: "/4.png", kicker: "AI Agents", title: "Assignment & memory" },
+    { src: "/5.png", kicker: "Monitoring", title: "Alerts & observability" },
+    { src: "/6.png", kicker: "Analytics", title: "Funnel & conversion" },
   ],
-}: {
-  images?: (string | Item)[];
-}) {
-  const items: Item[] = images.map((it) =>
-    typeof it === "string" ? { src: it } : it
+  autoplayMs = 4500,
+  thumbsSide = "right",
+}: Props) {
+  const items: Item[] = useMemo(
+    () => images.map((it) => (typeof it === "string" ? { src: it } : it)),
+    [images]
   );
+  const [idx, setIdx] = useState(0);
+  const paused = useRef(false);
+
+  // Auto-rotation
+  useEffect(() => {
+    if (!autoplayMs) return;
+    const i = setInterval(() => {
+      if (!paused.current) setIdx((p) => (p + 1) % items.length);
+    }, autoplayMs);
+    return () => clearInterval(i);
+  }, [autoplayMs, items.length]);
+
+  // Helpers
+  const pick = (n: number) => (n + items.length) % items.length;
+  const active = items[idx];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
-      {/* Layout asimétrico (moderno) */}
-      <Cell span="md:col-span-5 h-64 md:h-[20rem]" item={items[0]} delay={0.0} />
-      <Cell span="md:col-span-4 h-48 md:h-[16rem]" item={items[1]} delay={0.05} />
-      <Cell span="md:col-span-3 h-48 md:h-[16rem]" item={items[2]} delay={0.1} />
-
-      {/* Spotlight central */}
-      <Cell
-        span="md:col-span-7 h-64 md:h-[24rem]"
-        item={{ captionPos: "bottom", ...items[3] }}
-        delay={0.15}
-        spotlight
-      />
-      <Cell span="md:col-span-5 h-64 md:h-[24rem]" item={items[4]} delay={0.2} />
-
-      {/* Fila inferior */}
-      <Cell span="md:col-span-4 h-48 md:h-[16rem]" item={items[5]} delay={0.25} />
-      {/* Ejemplo de tarjeta SOLO TEXTO intercalada */}
-      <Cell
-        span="md:col-span-4 h-48 md:h-[16rem]"
-        item={{
-          kicker: "Automatización",
-          title: "Dispara eventos por webhooks o cron",
-          captionPos: "center",
-        }}
-        delay={0.3}
-      />
-      <Cell
-        span="md:col-span-4 h-48 md:h-[16rem]"
-        item={{
-          kicker: "Seguridad",
-          title: "Roles, logs y auditoría en Firestore",
-          captionPos: "center",
-        }}
-        delay={0.35}
-      />
-    </div>
-  );
-}
-
-function Cell({
-  span,
-  item,
-  delay = 0,
-  spotlight = false,
-}: {
-  span: string;
-  item?: Item;
-  delay?: number;
-  spotlight?: boolean;
-}) {
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const rotateX = useTransform(rx, [-0.5, 0.5], [6, -6]);
-  const rotateY = useTransform(ry, [-0.5, 0.5], [-10, 10]);
-
-  const onMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const r = e.currentTarget.getBoundingClientRect();
-      ry.set((e.clientX - r.left) / r.width - 0.5);
-      rx.set((e.clientY - r.top) / r.height - 0.5);
-    },
-    [rx, ry]
-  );
-
-  const onLeave = useCallback(() => {
-    rx.set(0);
-    ry.set(0);
-  }, [rx, ry]);
-
-  const pos = item?.captionPos ?? "bottom";
-  const posClasses =
-    pos === "top"
-      ? "top-0"
-      : pos === "center"
-      ? "top-1/2 -translate-y-1/2"
-      : "bottom-0";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28, scale: 0.98, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
-      className={`${span} group`}
-      style={{ perspective: 1000 }}
+    <section
+      className={`grid gap-5 md:gap-6 ${
+        thumbsSide === "right"
+          ? "lg:grid-cols-[minmax(0,1fr)_360px]"
+          : "lg:grid-cols-[360px_minmax(0,1fr)]"
+      }`}
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
     >
-      <motion.div
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        style={{ rotateX, rotateY }}
-        className={[
-          "relative h-full w-full overflow-hidden rounded-2xl",
-          "border border-white/10 bg-white/[0.04] backdrop-blur",
-          "shadow-[0_18px_60px_-30px_rgba(0,0,0,0.55)]",
-          "transition-transform duration-300 will-change-transform",
-          "hover:scale-[1.02]",
-          spotlight ? "ring-1 ring-fuchsia-500/30" : "",
-        ].join(" ")}
-      >
-        {/* ▼ Borde degradé por debajo */}
+      {/* Hero panel */}
+      <div className="relative h-[54vw] max-h-[560px] lg:h-[540px] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur">
+        {/* Soft glow */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[1.05rem] z-0"
+          className="absolute -inset-px blur-2xl opacity-40"
           style={{
-            border: "1px solid transparent",
             background:
-              "linear-gradient(#0000, #0000) padding-box, linear-gradient(120deg, rgba(232,121,249,0.5), rgba(99,102,241,0.5)) border-box",
+              "radial-gradient(60% 60% at 50% 45%, rgba(167,139,250,.12), rgba(99,102,241,0))",
           }}
         />
-
-        {/* Imagen si existe */}
-        {item?.src ? (
-          <Image
-            src={item.src as string}
-            alt={(item.alt ?? item.title ?? "showcase") as string}
-            fill
-            sizes="(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw"
-            className="absolute inset-0 h-full w-full object-cover z-10 scale-105 group-hover:scale-110 transition-transform duration-700 ease-out"
-            priority={false}
-            draggable={false}
-          />
-        ) : (
-          // Card solo texto (sin imagen)
-          <div className="absolute inset-0 z-10 grid place-items-center bg-gradient-to-br from-fuchsia-500/10 via-indigo-500/5 to-transparent" />
-        )}
-
-        {/* Caption (kicker + title) */}
-        {(item?.kicker || item?.title) && (
-          <div
-            className={[
-              "absolute left-0 right-0 z-20",
-              posClasses,
-              "px-4 py-3 md:px-5 md:py-4",
-            ].join(" ")}
+        {/* Slides */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 1.02 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0.2, scale: 1.01 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
           >
-            <div className="mx-3 md:mx-4 rounded-xl bg-black/35 backdrop-blur-sm ring-1 ring-white/10 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.6)]">
-              <div className="px-3.5 py-2.5 md:px-4 md:py-3">
-                {item?.kicker && (
-                  <p className="text-[10px] md:text-xs font-semibold uppercase tracking-wider text-fuchsia-300/90">
-                    {item.kicker}
-                  </p>
-                )}
-                {item?.title && (
-                  <h4 className="text-sm md:text-base font-semibold leading-snug">
-                    {item.title}
-                  </h4>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+            {active?.src ? (
+              <Image
+                src={active.src}
+                alt={(active.alt ?? active.title ?? "showcase") as string}
+                fill
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                className="object-cover"
+                draggable={false}
+                priority={false}
+              />
+            ) : (
+              <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-white/10 to-transparent" />
+            )}
 
-        {/* Glow violeta */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -inset-px rounded-[1.1rem] blur-xl opacity-60 z-20"
-          style={{
-            background:
-              "radial-gradient(60% 60% at 50% 50%, rgba(217,70,239,0.10), rgba(99,102,241,0.00))",
-          }}
-        />
-        {/* Shine */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
-          style={{
-            background:
-              "linear-gradient(60deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0) 80%)",
-            mixBlendMode: "overlay",
-          }}
-        />
-      </motion.div>
-    </motion.div>
+            {/* Caption */}
+            {(active?.kicker || active?.title) && (
+              <div className="absolute left-0 right-0 bottom-0 p-3 sm:p-4">
+                <div className="mx-1 sm:mx-2 rounded-xl bg-black/45 ring-1 ring-white/10 backdrop-blur px-3.5 py-2.5 max-w-[90%]">
+                  {active?.kicker && (
+                    <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white/80">
+                      {active.kicker}
+                    </p>
+                  )}
+                  {active?.title && (
+                    <h4 className="text-sm sm:text-base font-semibold leading-tight">
+                      {active.title}
+                    </h4>
+                  )}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Prev/Next controls */}
+        <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 sm:px-3">
+          <button
+            aria-label="Previous"
+            className="rounded-full bg-black/40 ring-1 ring-white/10 p-2 hover:bg-black/55 transition"
+            onClick={() => setIdx((p) => pick(p - 1))}
+          >
+            <Chevron className="rotate-180" />
+          </button>
+          <button
+            aria-label="Next"
+            className="rounded-full bg-black/40 ring-1 ring-white/10 p-2 hover:bg-black/55 transition"
+            onClick={() => setIdx((p) => pick(p + 1))}
+          >
+            <Chevron />
+          </button>
+        </div>
+
+        {/* Dots */}
+        <div className="absolute left-0 right-0 bottom-2 flex justify-center gap-2">
+          {items.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              className={`h-1.5 rounded-full transition-all ${
+                i === idx ? "w-6 bg-white/90" : "w-3 bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Thumbnails (row on mobile, column on desktop) */}
+      <div
+        className={`${
+          thumbsSide === "right" ? "lg:order-none" : "lg:order-first"
+        }`}
+      >
+        <div className="flex lg:flex-col gap-3 overflow-x-auto no-scrollbar pr-1">
+          {items.map((it, i) => (
+            <Thumb
+              key={i}
+              item={it}
+              active={i === idx}
+              onSelect={() => setIdx(i)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
+
+/* ---------------- Subcomponents ---------------- */
+
+function Thumb({
+  item,
+  active,
+  onSelect,
+}: {
+  item: Item;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      className={`relative shrink-0 rounded-xl overflow-hidden border transition-all
+        ${active ? "border-white/40 ring-2 ring-white/30" : "border-white/10 hover:border-white/20"}
+        w-[46%] sm:w-[38%] lg:w-full lg:h-[110px]
+      `}
+      aria-pressed={active}
+    >
+      {item?.src ? (
+        <Image
+          src={item.src}
+          alt={(item.alt ?? item.title ?? "thumbnail") as string}
+          width={320}
+          height={200}
+          className={`h-full w-full object-cover ${
+            active ? "" : "opacity-80 grayscale-[30%]"
+          }`}
+          draggable={false}
+        />
+      ) : (
+        <div className="h-full w-full bg-gradient-to-br from-white/10 to-transparent" />
+      )}
+      {(item?.kicker || item?.title) && (
+        <div className="absolute left-0 right-0 bottom-0 p-2">
+          <div
+            className={`rounded-md px-2 py-1 text-[10px] leading-none backdrop-blur ${
+              active ? "bg-black/60 ring-1 ring-white/20" : "bg-black/35"
+            }`}
+          >
+            <span className="font-medium">
+              {item.title || item.kicker || "Item"}
+            </span>
+          </div>
+        </div>
+      )}
+    </button>
+  );
+}
+
+function Chevron({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`h-4 w-4 text-white ${className}`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+    >
+      <path d="m10 6 6 6-6 6" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+

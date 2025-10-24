@@ -24,7 +24,7 @@ type Props = {
 export default function OmnichannelHero({
   title = "Omnichannel Ads,\nOne Smart Platform",
   subtitle = "Run and manage campaigns seamlessly across every major platform. Launch once, scale everywhere—with AI-powered optimization.",
-  ctaLabel = "Try Now for Free",
+ 
   ctaHref = "/contact",
    leftLogos = [
     { src: "/brands/meta.svg",      alt: "Meta",       rotate: -14 },
@@ -59,18 +59,7 @@ export default function OmnichannelHero({
             </p>
 
             <div className="mt-5">
-              <Link
-                href={ctaHref}
-                className={[
-                  "inline-flex items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold text-white",
-                  "bg-gradient-to-r from-fuchsia-600 via-violet-600 to-indigo-600",
-                  "shadow-[0_8px_24px_-8px_rgba(168,85,247,0.55)] ring-1 ring-white/10",
-                  "transition hover:shadow-[0_14px_34px_-10px_rgba(168,85,247,0.75)] hover:saturate-125 active:translate-y-px",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/70",
-                ].join(" ")}
-              >
-                {ctaLabel}
-              </Link>
+              
             </div>
           </div>
 

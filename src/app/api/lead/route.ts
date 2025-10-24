@@ -1,73 +1,48 @@
+// src/app/api/lead/route.ts
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import { getAdminDb } from "../../../lib/firebaseAdmin"; // ← ruta relativa
+import * as admin from "firebase-admin";
 
-const leadSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  message: z.string().min(10),
-});
+type Body = { name?: string; email?: string; message?: string; source?: string; };
 
-export async function POST(request: Request) {
+function s(x?: string) { return (x || "").toString().trim().slice(0, 10000); }
+
+export async function POST(req: Request) {
   try {
-    const json = await request.json();
-    const data = leadSchema.parse(json);
-
-    if (!process.env.RESEND_API_KEY) {
-      return NextResponse.json({ ok: false, error: "RESEND_API_KEY not configured" }, { status: 500 });
+    if (!(req.headers.get("content-type") || "").includes("application/json")) {
+      return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 415 });
     }
 
-    const toEmail = process.env.CONTACT_TO_EMAIL || "federudiero@gmail.com";
-    const fromEmail = process.env.CONTACT_FROM_EMAIL || "Zenvicode <onboarding@resend.dev>";
+    const b = (await req.json()) as Body;
 
-    const subject = `New contact lead from ${data.name}`;
-    const html = `
-      <div style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111">
-        <h2 style="margin:0 0 12px 0">New Contact Lead</h2>
-        <p style="margin:0 0 6px 0"><strong>Name:</strong> ${escapeHtml(data.name)}</p>
-        <p style="margin:0 0 6px 0"><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-        <p style="margin:0 0 6px 0"><strong>Message:</strong></p>
-        <div style="white-space:pre-wrap;border:1px solid #eee;border-radius:8px;padding:12px;background:#fafafa">${escapeHtml(data.message)}</div>
-      </div>
-    `;
+    const doc = {
+      name: s(b.name),
+      email: s(b.email),
+      message: s(b.message),
+      source: s(b.source) || "web",
+      status: "nuevo",
+      priority: "normal",
+      assignedTo: null,
+      followUpAt: null,
+      lastNote: "",
+      notes: [],
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    };
 
-    const r = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: toEmail,
-        subject,
-        html,
-        reply_to: data.email,
-      }),
-    });
-
-    const resp = await r.json().catch(() => ({}));
-    if (!r.ok) {
-      return NextResponse.json({ ok: false, error: resp?.error || "Resend error" }, { status: 502 });
+    if (!doc.name || !doc.message) {
+      return NextResponse.json({ error: "name y message son requeridos" }, { status: 400 });
     }
 
-    return NextResponse.json({ ok: true, id: resp?.id }, { status: 200 });
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return NextResponse.json({ ok: false, errors: err.flatten() }, { status: 400 });
-    }
-    return NextResponse.json({ ok: false, error: "Unexpected error" }, { status: 500 });
+    const db = getAdminDb();
+    const ref = await db.collection("leads").add(doc);
+    return NextResponse.json({ id: ref.id }, { status: 201 });
+
+  } catch (err: any) {
+    console.error("POST /api/lead failed:", err);
+    return NextResponse.json({ error: String(err?.message || err) }, { status: 500 });
   }
-}
-
-export function GET() {
-  return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
-}
-
-function escapeHtml(str: string) {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }

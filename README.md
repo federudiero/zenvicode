@@ -84,3 +84,87 @@ src/
 - Añadir pruebas unitarias/e2e y checklist de accesibilidad.
 
 Más detalles en `docs/ROADMAP.md`, `docs/LEARNING_LOG.md` y `docs/estado_proyecto.md`.
+
+## CRM (Firebase) — Setup rápido
+
+El sitio incluye un CRM mínimo accesible en `/[locale]/admin/crm` (por ejemplo: `/es/admin/crm`). El acceso está oculto y se revela sólo para administradores.
+
+- Enlace oculto: triple clic en el enlace con id `#site-logo` (Home) o escribe "crm" en cualquier parte. Si no has iniciado sesión y no eres admin, se abrirá el login con Google.
+- Autenticación: Firebase Auth (proveedor Google). Habilítalo en tu proyecto de Firebase: Auth -> Sign-in method -> Google -> Enable.
+- Datos: Firestore. Los leads se escriben en la colección `leads`. La app cliente sólo puede leer/actualizar leads si eres admin. Las creaciones de leads se realizan desde el endpoint Next.js con Admin SDK.
+
+### Variables de entorno
+
+Crea `.env.local` en la raíz del proyecto con credenciales de cliente y del Admin SDK:
+
+```
+# Firebase Web (cliente)
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+
+# Firebase Admin SDK (server-side para /api/lead)
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+# Asegúrate de mantener los \n del bloque de la llave privada
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# Opcional: Emails para /api/book-demo
+RESEND_API_KEY=
+CONTACT_TO_EMAIL=
+CONTACT_FROM_EMAIL=
+```
+
+### Reglas de seguridad de Firestore
+
+El repositorio incluye `firestore.rules` con reglas recomendadas:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isAdmin == true;
+    }
+    match /admins/{uid} {
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+    match /leads/{id} {
+      allow read: if isAdmin();
+      allow create: if false; // creación sólo desde servidor (Admin SDK)
+      allow update, delete: if isAdmin();
+    }
+  }
+}
+```
+
+Cárgalas en Firebase Console (Firestore -> Rules) o con Firebase CLI.
+
+### Crear un usuario administrador
+
+1) Autentícate en la app con Google (en la UI verás tu email cuando no tengas permisos).
+2) Toma tu UID desde Firebase Auth (Users) o desde la app si lo registras en logs.
+3) En Firestore crea el documento: `admins/{UID}` con el campo `{ isAdmin: true }`.
+
+Una vez admin, verás el botón "Open CRM" cuando dispares el enlace oculto y podrás acceder a `/[locale]/admin/crm`.
+
+### API / Formularios
+
+- `POST /api/lead` valida `{ name, email, message, source? }` y guarda un documento en `leads` con `status: "nuevo"`, `createdAt`, `updatedAt` y metacampos. Respuesta: `{ ok: true, id }`.
+  - El formulario en `/[locale]/(site)/contact` usa `FormCard` y envía a este endpoint.
+  - Soporte de honeypot opcional (`hp`), ignorado si está vacío.
+- `POST /api/book-demo` valida `{ company, name, email, message }` y (opcionalmente) envía email vía Resend si `RESEND_API_KEY` está configurado.
+
+### Desarrollo
+
+- Instalar dependencias: `pnpm install`
+- Desarrollo: `pnpm dev`
+- Lint: `pnpm run lint`
+- Build: `pnpm run build`

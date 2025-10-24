@@ -1,5 +1,6 @@
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
+import HiddenAdminLink from "@/components/HiddenAdminLink";
 
 async function loadMessages(locale: string) {
   try {
@@ -19,6 +20,11 @@ export default async function LocaleLayout(
   const messages = await loadMessages(locale);
   if (!messages) notFound();
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>{children}</NextIntlClientProvider>
+    <>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        {children}
+      </NextIntlClientProvider>
+      <HiddenAdminLink locale={locale} />
+    </>
   );
 }
