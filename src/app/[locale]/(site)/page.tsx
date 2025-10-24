@@ -78,65 +78,38 @@ export default function HomePage() {
 
         <SectionDivider />
 
-        {/* Contact con padding y grilla más separada */}
-        <section id="contact" className="container mx-auto px-4 py-12 md:py-20">
-          <div className="text-center mb-10 md:mb-14">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-              Contact us
-            </h2>
-            <p className="mt-3 text-sm md:text-base text-muted-foreground">
-              Tell us what you need and we’ll get back within one business day.
-            </p>
-          </div>
+        
 
-          <div className="mt-8 md:mt-12 grid gap-4 md:gap-6 md:grid-cols-3">
-            <a
-              href="mailto:hello@zenvicode.com"
-              className="relative rounded-2xl p-5 text-sm border border-white/10 bg-card/60 backdrop-blur transition hover:border-fuchsia-400/40 hover:shadow-[0_10px_30px_-12px_rgba(217,70,239,0.35)]"
-            >
-              <span className="font-semibold">Email</span>
-              <span className="block text-muted-foreground">hello@zenvicode.com</span>
-            </a>
-            <a
-              href="https://wa.me/549000000000"
-              target="_blank"
-              rel="noreferrer"
-              className="relative rounded-2xl p-5 text-sm border border-white/10 bg-card/60 backdrop-blur transition hover:border-fuchsia-400/40 hover:shadow-[0_10px_30px_-12px_rgba(217,70,239,0.35)]"
-            >
-              <span className="font-semibold">WhatsApp</span>
-              <span className="block text-muted-foreground">Chat with our team</span>
-            </a>
-            <div className="relative rounded-2xl p-5 text-sm border border-white/10 bg-card/60 backdrop-blur">
-              <span className="font-semibold">Availability</span>
-              <span className="block text-muted-foreground">
-                Mon–Fri, 9:00–18:00 (UTC-3)
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <SectionDivider />
 
 
         <section className="container mx-auto px-4 py-12 md:py-20">
   <ShowcaseCollage
   images={[
-    { src: "/1.png", kicker: "Integraciones", title: "WhatsApp, Slack y más" },
-    { src: "/2.png", kicker: "Orquestación", title: "Flujos n8n escalables", captionPos: "top" },
-    { src: "/3.png", kicker: "Mensajería", title: "Plantillas y KPIs" },
-    { src: "/4.png", kicker: "IA Agentes", title: "Asignación y memoria", captionPos: "bottom" },
-    { src: "/5.png", kicker: "Monitoreo", title: "Alertas y observabilidad" },
-    { src: "/6.png", kicker: "Analítica", title: "Embudo y conversión" },
-  ]}
+  { src: "/1.png", kicker: "Integrations", title: "WhatsApp, Slack and more" },
+  { src: "/2.png", kicker: "Orchestration", title: "Scalable n8n workflows", captionPos: "top" },
+  { src: "/4.png", kicker: "AI Agents", title: "Assignment and memory", captionPos: "bottom" },
+  { src: "/6.png", kicker: "Analytics", title: "Funnel and conversion tracking" },
+]}
 />
 </section>
 
-          <div className="grid gap-8 md:gap-10 md:grid-cols-2 items-stretch">
-            <FormCard type="lead" />
-            <FormCard type="demo" />
-          </div>
+  <SectionDivider />
 
-      
+ <section id="contact" className="container mx-auto px-4 py-12 md:py-20">
+  <div className="text-center mb-10 md:mb-14">
+    <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Contact us</h2>
+    <p className="mt-3 text-sm md:text-base text-muted-foreground">
+      Tell us what you need and we’ll get back within one business day.
+    </p>
+  </div>
+
+  <div className="grid place-items-center">
+    <div className="w-full max-w-xl">
+      <FormCard type="lead" />
+    </div>
+  </div>
+</section>
+      <SectionDivider />
       </div>
        <Footer />
     </main>
