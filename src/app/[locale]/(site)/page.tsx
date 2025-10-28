@@ -1,117 +1,114 @@
+// src/app/[locale]/(site)/page.tsx
 import Hero from "@/components/Hero";
-import Steps from "@/components/Steps";
-
-import N8nGraphBG from "@/components/n8n/N8nGraphBG";
-
+import StepsSticky, { type StepItem } from "@/components/StepsSticky";
 import FormCard from "@/components/FormCard";
-
-import OmnichannelHero from "@/components/OmnichannelHero";
-import ShowcaseCollage from "@/components/ShowcaseCollage";
-
 import Footer from "@/components/Footer";
+import BackgroundVideo from "@/components/BackgroundVideo";
+import BackgroundVideo2 from "@/components/BackgroundVideo2";
 
-function SectionDivider() {
-  return (
-    <div className="container mx-auto px-4">
-      <div className="my-10 md:my-14 h-px w-full rounded-full bg-gradient-to-r from-transparent via-fuchsia-500/25 to-transparent" />
-    </div>
-  );
-}
+// ✅ Importá el JSON desde /content
+import stepsJson from "@/content/steps_sticky.json";
+const steps: StepItem[] = stepsJson.items;
 
 export default function HomePage() {
-
   return (
     <main className="relative">
-      {/* Background */}
-      <div
-        className="absolute inset-0 -z-10 pointer-events-none"
-        aria-hidden
-        suppressHydrationWarning
-      >
-        <N8nGraphBG
-          count={75}
-          speedRange={[1.2, 2.2]}
-          amplitude={{ x: 23, y: 13 }}
-        
-        />
-      </div>
-
-      {/* Más aire vertical general */}
+      {/* El fondo global viene del layout; no agregamos fondo acá */}
       <div className="space-y-24 md:space-y-32">
-        <section className="container mx-auto px-4 pt-16 md:pt-20">
+        {/* Home / Hero */}
+        <section id="home" className="container mx-auto px-4 pt-16 md:pt-20">
           <Hero />
         </section>
 
-  <SectionDivider />
-
-<section className="container mx-auto px-4">
-  <OmnichannelHero
-    leftLogos={[
-      { src: "/brands/meta.svg",      alt: "Meta",       rotate: -14 },
-      { src: "/brands/googleads.svg", alt: "Google Ads", rotate:  10 },
-      { src: "/brands/reddit.svg",    alt: "Reddit",     rotate:  -6 },
-    ]}
-    rightLogos={[
-      { src: "/brands/linkedin.svg",  alt: "LinkedIn",   rotate:  12 },
-      { src: "/brands/tiktok.svg",    alt: "TikTok",     rotate:  -8 },
-      { src: "/brands/youtube.svg",   alt: "YouTube",    rotate:   8 },
-    ]}
-    ctaHref="/contact"
-    ctaLabel="Try Now for Free"
-    title={"Omnichannel Ads,\nOne Smart Platform"}
-    subtitle="Run and manage campaigns seamlessly across every major platform. Launch once, scale everywhere—with AI-powered optimization."
-  />
-</section>
-
-
- 
-  <SectionDivider />
-
-
- 
-        <section className="container mx-auto px-4">
-          <Steps />
+        {/* Use Cases */}
+        <section id="use-cases" className="scroll-mt-24">
+          <StepsSticky items={steps} stickyHeight="60vh" stickyTop="15vh" />
         </section>
 
-     
+        {/* How We Work */}
+        <section id="how-we-work" className="scroll-mt-24">
+          <BackgroundVideo src="/redesSociales.mp4" heightClassName="h-screen" overlayOpacity={30} />
+        </section>
 
-
-        <SectionDivider />
-
+        {/* Contact */}
+        <section id="contact" className="w-full scroll-mt-24">
+  <BackgroundVideo2 src="/lineas.mp4" heightClassName="min-h-[80vh]" overlayOpacity={45}>
+    <div className="container mx-auto px-6 py-12 md:py-24">
+      {/* Grilla centrada verticalmente y con columnas proporcionadas */}
+      <div className="grid md:min-h-[60vh] md:grid-cols-[1.05fr_1fr] items-center gap-8 md:gap-12 lg:gap-16">
         
+        {/* ─── IZQUIERDA: Panel de info, con blur y ring para legibilidad sobre el video ─── */}
+        <aside className="relative rounded-2xl bg-black/35 backdrop-blur-md ring-1 ring-white/10 p-6 md:p-8">
+          <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight [text-wrap:balance]">
+            Contact
+          </h2>
+          <p className="mt-2 text-white/80">
+  We’ll get back to you within 24 hours.
+</p>
 
+          <div className="mt-6 space-y-5">
+            <div>
+              <div className="text-sm font-semibold text-white/70">Teléfono</div>
+              <a href="tel:+5493518120950" className="text-white/90 hover:underline">
+                +54 9 3518120950
+              </a>
+            </div>
 
+            <div>
+              <div className="text-sm font-semibold text-white/70">Email</div>
+              <a href="mailto:zenvicode@gmail.com" className="text-white/90 hover:underline">
+                zenvicode@gmail.com
+              </a>
+            </div>
+          </div>
 
-        <section className="container mx-auto px-4 py-12 md:py-20">
-  <ShowcaseCollage
-  images={[
-  { src: "/1.png", kicker: "Integrations", title: "WhatsApp, Slack and more" },
-  { src: "/2.png", kicker: "Orchestration", title: "Scalable n8n workflows", captionPos: "top" },
-  { src: "/4.png", kicker: "AI Agents", title: "Assignment and memory", captionPos: "bottom" },
-  { src: "/6.png", kicker: "Analytics", title: "Funnel and conversion tracking" },
-]}
-/>
-</section>
+          {/* Separador sutil */}
+          <div className="mt-8 h-px w-full bg-white/10" />
 
-  <SectionDivider />
+          {/* Redes */}
+          <ul className="mt-6 flex items-center gap-3 text-white/85">
+            <li>
+              <a
+                href="#"
+                className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10 transition"
+                aria-label="Facebook"
+              >
+                Fb
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10 transition"
+                aria-label="Instagram"
+              >
+                Ig
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="grid h-10 w-10 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10 transition"
+                aria-label="YouTube"
+              >
+                Yt
+              </a>
+            </li>
+          </ul>
+        </aside>
 
- <section id="contact" className="container mx-auto px-4 py-12 md:py-20">
-  <div className="text-center mb-10 md:mb-14">
-    <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Contact us</h2>
-    <p className="mt-3 text-sm md:text-base text-muted-foreground">
-      Tell us what you need and we’ll get back within one business day.
-    </p>
-  </div>
-
-  <div className="grid place-items-center">
-    <div className="w-full max-w-xl">
-      <FormCard type="lead" />
-    </div>
-  </div>
-</section>
-      <SectionDivider />
+        {/* ─── DERECHA: Formulario ─── */}
+        <div className="md:pl-0">
+          <FormCard type="lead" />
+        </div>
       </div>
-       <Footer />
+    </div>
+  </BackgroundVideo2>
+</section>
+
+      </div>
+
+      <Footer />
     </main>
   );
 }

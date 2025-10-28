@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { Timestamp, collection, doc, onSnapshot, orderBy, query, updateDoc, serverTimestamp } from "firebase/firestore";
 import { getFirebase } from "@/lib/firebase";
