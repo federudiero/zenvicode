@@ -10,8 +10,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-4 gap-10 text-sm">
         {/* Brand */}
         <div>
-          <h3 className="text-xl font-bold mb-3 text-primary">Zenvicode</h3>
-          <p className="opacity-80 leading-relaxed">
+          <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3 text-primary [text-wrap:balance]">Zenvicode</h3>
+          <p className="text-base md:text-lg leading-relaxed text-white/80 [text-wrap:pretty]">
             Zenvicode helps businesses automate workflows, scale faster, and
             connect smarter with AI-driven integrations for marketing, sales, and
             customer support.
@@ -33,23 +33,23 @@ export default function Footer() {
 
         {/* Company */}
         <div>
-          <h4 className="font-semibold mb-3 text-primary">Company</h4>
+          <h4 className="text-xl font-semibold tracking-tight mb-3 text-primary [text-wrap:balance]">Company</h4>
           <ul className="space-y-2">
-            <li><Link href="/about" className="hover:underline">About Us</Link></li>
-            <li><Link href="/careers" className="hover:underline">Careers</Link></li>
-            <li><Link href="/partners" className="hover:underline">Partners</Link></li>
-            <li><Link href="/contact" className="hover:underline">Contact</Link></li>
+            <li><Link href="/about" className="hover:underline text-white/80">About Us</Link></li>
+            <li><Link href="/careers" className="hover:underline text-white/80">Careers</Link></li>
+            <li><Link href="/partners" className="hover:underline text-white/80">Partners</Link></li>
+            <li><Link href="/contact" className="hover:underline text-white/80">Contact</Link></li>
           </ul>
         </div>
 
         {/* Solutions */}
         <div>
-          <h4 className="font-semibold mb-3 text-primary">Solutions</h4>
+          <h4 className="text-xl font-semibold tracking-tight mb-3 text-primary [text-wrap:balance]">Solutions</h4>
           <ul className="space-y-2">
-            <li><Link href="/ai-automation" className="hover:underline">AI Automation</Link></li>
-            <li><Link href="/marketing" className="hover:underline">Omnichannel Marketing</Link></li>
-            <li><Link href="/crm" className="hover:underline">CRM Platform</Link></li>
-            <li><Link href="/integrations" className="hover:underline">Integrations</Link></li>
+            <li><Link href="/ai-automation" className="hover:underline text-white/80">AI Automation</Link></li>
+            <li><Link href="/marketing" className="hover:underline text-white/80">Omnichannel Marketing</Link></li>
+            <li><Link href="/crm" className="hover:underline text-white/80">CRM Platform</Link></li>
+            <li><Link href="/integrations" className="hover:underline text-white/80">Integrations</Link></li>
           </ul>
         </div>
 

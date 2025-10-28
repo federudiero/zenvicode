@@ -12,7 +12,7 @@
         "Documented and secure by design."
       ],
       "kpi": "⏱️ 40–70% less operational time in typical cases.",
-      "cta": "Book a 20-minute session",
+      
       "reverse": false
     },
     {
@@ -27,7 +27,7 @@
         "Dashboards that show the before and after."
       ],
       "kpi": "📈 +25% throughput in support and back-office processes.",
-      "cta": "Show us your process",
+  
       "reverse": true
     },
     {
@@ -42,7 +42,7 @@
         "Ongoing support and optimization."
       ],
       "kpi": "💸 Automations that pay for themselves in 30–90 days.",
-      "cta": "Request an outcome proposal",
+      
       "reverse": false
     },
     {
@@ -57,7 +57,7 @@
         "Roadmap for continuous improvement."
       ],
       "kpi": "✅ Internal NPS ↑ and errors ↓ in 2–4 weeks.",
-      "cta": "Compare approaches with a real case",
+     
       "reverse": true
     }
   ]

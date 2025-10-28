@@ -68,11 +68,11 @@ export default function FormCard({ type }: { type: FormType }) {
       {/* inner card */}
       <div className="rounded-2xl h-full bg-card/95 backdrop-blur border border-white/10 p-6">
         <div className="mb-5">
-          <h3 className="text-xl font-semibold tracking-tight">
-            {type === "demo" ? "Book a demo" : "Get in touch"}
+          <h3 className="text-2xl md:text-3xl font-semibold tracking-tight [text-wrap:balance]">
+            {type === "demo" ? "Book a Demo" : "Get in Touch"}
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            We’ll reply shortly with next steps.
+          <p className="mt-1 text-base md:text-lg leading-relaxed text-white/80 [text-wrap:pretty]">
+            We'll reply shortly with next steps.
           </p>
         </div>
 
