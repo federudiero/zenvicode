@@ -1,3 +1,4 @@
+// src/components/FormCard.tsx
 "use client";
 
 import { useState } from "react";
@@ -18,7 +19,7 @@ const baseSchema = z.object({
 type FormType = "lead" | "demo";
 
 export default function FormCard({ type }: { type: FormType }) {
-  // ⚠️ schema dinámico según el tipo
+  // schema dinámico según el tipo
   const schema = baseSchema.extend(
     type === "demo" ? { company: z.string().min(2, "Company is too short") } : {}
   );
@@ -27,7 +28,6 @@ export default function FormCard({ type }: { type: FormType }) {
   const [status, setStatus] =
     useState<"idle" | "loading" | "success" | "error">("idle");
 
-  // 👇 añadimos `reset`
   const {
     register,
     handleSubmit,
@@ -47,8 +47,7 @@ export default function FormCard({ type }: { type: FormType }) {
       });
       if (!res.ok) throw new Error("Request failed");
 
-      // ✅ LIMPIA TODOS LOS CAMPOS LUEGO DEL ÉXITO
-      reset(); // <-- esto borra name/email/message y company (si existe)
+      reset();
       setStatus("success");
     } catch (e) {
       console.error(e);
@@ -72,7 +71,7 @@ export default function FormCard({ type }: { type: FormType }) {
             {type === "demo" ? "Book a Demo" : "Get in Touch"}
           </h3>
           <p className="mt-1 text-base md:text-lg leading-relaxed text-white/80 [text-wrap:pretty]">
-            We'll reply shortly with next steps.
+            We&apos;ll reply shortly with next steps.
           </p>
         </div>
 
@@ -158,8 +157,7 @@ export default function FormCard({ type }: { type: FormType }) {
               </span>
               <span
                 aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-2xl opacity-25
-                           bg-[radial-gradient(120%_120%_at_10%_-20%,white,transparent_40%)]"
+                className="pointer-events-none absolute inset-0 rounded-2xl opacity-25 bg-[radial-gradient(120%_120%_at_10%_-20%,white,transparent_40%)]"
               />
             </button>
           </div>
@@ -172,7 +170,7 @@ export default function FormCard({ type }: { type: FormType }) {
               className="flex items-center gap-2 text-emerald-400 text-sm"
             >
               <CheckCircle2 className="size-4" />
-              Submitted successfully — we’ll be in touch!
+              Submitted successfully — we&apos;ll be in touch!
             </motion.p>
           )}
           {status === "error" && (

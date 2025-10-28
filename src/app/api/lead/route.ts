@@ -3,17 +3,27 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { getAdminDb } from "../../../lib/firebaseAdmin"; // ← ruta relativa
+import { getAdminDb } from "../../../lib/firebaseAdmin";
 import * as admin from "firebase-admin";
 
-type Body = { name?: string; email?: string; message?: string; source?: string; };
+type Body = {
+  name?: string;
+  email?: string;
+  message?: string;
+  source?: string;
+};
 
-function s(x?: string) { return (x || "").toString().trim().slice(0, 10000); }
+function s(x?: string) {
+  return (x || "").toString().trim().slice(0, 10000);
+}
 
 export async function POST(req: Request) {
   try {
     if (!(req.headers.get("content-type") || "").includes("application/json")) {
-      return NextResponse.json({ error: "Content-Type must be application/json" }, { status: 415 });
+      return NextResponse.json(
+        { error: "Content-Type must be application/json" },
+        { status: 415 }
+      );
     }
 
     const b = (await req.json()) as Body;
@@ -25,10 +35,10 @@ export async function POST(req: Request) {
       source: s(b.source) || "web",
       status: "nuevo",
       priority: "normal",
-      assignedTo: null,
-      followUpAt: null,
+      assignedTo: null as string | null,
+      followUpAt: null as admin.firestore.Timestamp | null,
       lastNote: "",
-      notes: [],
+      notes: [] as Array<{ by?: string; at?: admin.firestore.Timestamp; text?: string }>,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
@@ -40,9 +50,12 @@ export async function POST(req: Request) {
     const db = getAdminDb();
     const ref = await db.collection("leads").add(doc);
     return NextResponse.json({ id: ref.id }, { status: 201 });
-
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg =
+      typeof err === "object" && err !== null && "message" in err
+        ? String((err as { message?: unknown }).message)
+        : String(err);
     console.error("POST /api/lead failed:", err);
-    return NextResponse.json({ error: String(err?.message || err) }, { status: 500 });
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
