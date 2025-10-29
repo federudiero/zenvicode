@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 export default function Hero() {
   const reduce = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   useEffect(() => setMounted(true), []);
   const canAnimate = mounted && !reduce;
 
@@ -19,11 +20,9 @@ export default function Hero() {
         relative
         py-32 md:py-48
         min-h-[72vh] flex items-center
-        bg-transparent      /* ✅ sin fondo para que no aparezca el “recuadro” */
+        bg-transparent
       "
     >
-      {/* ✅ Sin decoraciones ni spotlight para que no se vea borde alguno */}
-
       <div className="relative mx-auto w-full max-w-6xl px-6 text-center">
         <div className="will-change-transform">
           <h1
@@ -31,7 +30,10 @@ export default function Hero() {
               mt-6 text-white font-extrabold tracking-tight
               text-5xl sm:text-6xl md:text-7xl [text-wrap:balance]
               [text-shadow:0_3px_18px_rgba(0,0,0,.65)]
+              select-none
             "
+            // Si el mouse sale del título, limpiamos estado de hover
+            onMouseLeave={() => setHoverIndex(null)}
           >
             {headline.split("").map((ch, i) => (
               <motion.span
@@ -44,7 +46,29 @@ export default function Hero() {
                   damping: 20,
                   delay: 0.04 * i,
                 }}
-                className="inline-block"
+                className="
+                  inline-block align-baseline
+                  px-[1px]  /* evita jitter en hover */
+                  cursor-default
+                  [will-change:transform,filter]
+                "
+                onMouseEnter={() => setHoverIndex(i)}
+                onFocus={() => setHoverIndex(i)}
+                onBlur={() => setHoverIndex(null)}
+                onTouchStart={() => {
+                  setHoverIndex(i);
+                  // efecto breve en touch
+                  setTimeout(() => setHoverIndex(null), 180);
+                }}
+                // Estado de hover por letra
+                whileHover={!reduce ? { y: -4, scale: 1.06 } : undefined}
+                style={{
+                  filter:
+                    hoverIndex === i
+                      ? "drop-shadow(0 0 12px rgba(255,255,255,.75))"
+                      : undefined,
+                  transition: "transform 160ms ease, filter 160ms ease",
+                }}
               >
                 {ch}
               </motion.span>
